@@ -5,13 +5,7 @@ interface SetScreenAction {
     setScreen: React.Dispatch<React.SetStateAction<number>>
 }
 
-const goFullScreen = () => {
-    const element = document.body;
-    var requestMethod =
-      element.requestFullscreen;
-    requestMethod.call(element);
-  };
-
+// Beyond this anytest is a pending test - just update the last pending test
 export const Rules = ({setScreen}: SetScreenAction) => {
     // time in seconds
     const [timeToStart, setTimeToStart] = useState(60);
@@ -19,7 +13,7 @@ export const Rules = ({setScreen}: SetScreenAction) => {
     const startTest = () => {
         setScreen(3);
     }
-    
+
     useEffect(() => {
         // TODO: make full screen
 
@@ -38,7 +32,7 @@ export const Rules = ({setScreen}: SetScreenAction) => {
         // TODO: retrieve test data
         // TODO: retrieve and set questions for the user
         // TODO: set remaining time on DB 
-        // TODO: set remaining time and selected answers on the local storage
+        // TODO: set remaining time and selected answers on the local storage 
     })
 
     return (
@@ -57,6 +51,7 @@ export const Rules = ({setScreen}: SetScreenAction) => {
                     <li>Something loremSomething lororem</li>
                 </ul>
                 <button className="btn btn-primary fl-rt" onClick={startTest}>Attempt</button>
+                <button className="btn btn-outline-primary btn-sm" onClick={() => setScreen(1)}>Back</button>
             </div>
             
         </>
