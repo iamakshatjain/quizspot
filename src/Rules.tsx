@@ -7,16 +7,17 @@ export const Rules: React.FC<RulesProps> = ({setScreen}) => {
     // time in seconds
     const [timeToStart, setTimeToStart] = useState(60);
 
-    // const goFullScreen = () => {
-    //     const element = document.querySelector('body') as HTMLBodyElement;
-    //     element.requestFullscreen()
-    //     .then(() => {
-    //         console.log('Full Screen Enabled');
-    //     })
-    //     .catch(e => console.error(e));
-    //   };
+    const goFullScreen = () => {
+        const element = document.documentElement;
+        element.requestFullscreen()
+        .then((res) => {
+            console.log('Full Screen Enabled');
+        })
+        .catch(e => console.error(e));
+    };
     
     const startTest = () => {
+        goFullScreen();
         setScreen(3);
     }
 
@@ -51,6 +52,7 @@ export const Rules: React.FC<RulesProps> = ({setScreen}) => {
                 </ul>
                 <button className="btn btn-primary fl-rt" onClick={startTest}>Attempt</button>
                 <button className="btn btn-outline-primary btn-sm" onClick={() => setScreen(1)}>Back</button>
+                
             </div>
             
         </>

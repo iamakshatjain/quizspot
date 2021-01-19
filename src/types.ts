@@ -85,7 +85,8 @@ export interface QuestionProps{
     questionNumber: number,
     userDetails: User, 
     setUserDetails: React.Dispatch<React.SetStateAction<User>>,
-    remainingTime: number
+    remainingTime: number,
+    disabled: boolean
 }
 
 export interface QuestionsProps {
