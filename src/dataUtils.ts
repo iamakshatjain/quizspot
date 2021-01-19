@@ -8,8 +8,7 @@ const wait = (data: any, time = 0) => {
 // get user data
 export const getUserData = (name: string, email: string) => {
     // only the user which exists in the databse is allowed to take the tests
-    // find user with details
-    // TODO: handle this with DB later
+    // find user with matching details
     for(let i=0; i<userData.length; i++){
         let user = userData[i];
         if(user['name'] === name && user['email'] === email){
@@ -17,12 +16,13 @@ export const getUserData = (name: string, email: string) => {
         }
     }
     return wait({err : "Invalid User"} as Err);
+    // TODO: handle this with DB later
 }
 
 // get Tests data
 export const getTestData = (testIDs: string[]) => {
     // console.log('retrieving data for' + testIDs);
-    // TODO: get tests from DB based on testIDs
+    // for each testID find the data from the tests
     var testsData = [];
     for(let j=0; j<testIDs.length; j++){
         let id = testIDs[j];
@@ -35,8 +35,10 @@ export const getTestData = (testIDs: string[]) => {
     }
     
     return wait(testsData as Test[]);
+    // TODO: get tests from DB based on testIDs
 }
 
+// get questions for each user
 export const getUserQuestions = (test: Test) => {
     const {type:{identifier: questionType}, qCount: questionCount, level: questionLevel} = test;
     // TODO: find the questions randomly from DB with the above specifications
@@ -52,3 +54,8 @@ export const getUserQuestions = (test: Test) => {
     }
     return wait(userQuestions as UserQuestion[]);
 } 
+
+// export const evaluateTest = (user: User) => {
+//     // TODO: evaluate the last past test of the user and store the data into past tests data
+// }
+

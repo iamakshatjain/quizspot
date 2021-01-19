@@ -92,7 +92,7 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
     return(
         <>
             <p className="display-3 just-center">Hi, {name}</p>
-            <div className="just-center" id="available-tests">
+            <div id="available-tests">
                 <p className="display-5 mt-5">Available Tests</p>
                 {isAvailableTestsLoading ? (<div className="spinner-border text-primary" role="status" />):
                 // TODO: add data about question count, level and timeAllowed
@@ -114,8 +114,8 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
                 )}
             </div>
 
-            <div className="just-center mt-5" id="pending-tests">
-                <p className="display-5 mt-5">Pending Tests</p>
+            <div className="mt-3" id="pending-tests">
+                <p className="display-5">Pending Tests</p>
                 {isPendingTestsLoading ? (<div className="spinner-border text-primary" role="status" />):
                 // TODO: add data about question count, level and timeAllowed
                 (pendingTests && pendingTests.length ? 
@@ -131,11 +131,11 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
                             })
                         }
                     </div>) : 
-                    (<div className="display-6">{`None, Enjoy ;)`}</div>)
+                    (<div>{`None, Enjoy ;)`}</div>)
                 )}
             </div>
             
-            <button className="btn btn-outline-primary btn-sm mt-4" onClick={() => setScreen(0)}>Back</button>
+            <button className="btn btn-outline-primary btn-sm mt-5" onClick={() => setScreen(0)}>Back</button>
         </>
     )
 }

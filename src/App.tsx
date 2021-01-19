@@ -5,7 +5,7 @@ import {Rules} from './Rules';
 import {Questions} from './Questions';
 import {Completed} from './Completed';
 
-import {User, Test, SelectedScreen} from './types';
+import {User, SelectedScreen} from './types';
 
 // TODO: apply routing till tests page (user must not be able to reach test with a link)
 // TODO: apply redux - priority

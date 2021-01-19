@@ -47,8 +47,11 @@ export const Login: React.FC<LoginProps> = ({setScreen, setUserDetails}) => {
 
     return (
         <>
-            <div style={{width: `${0.1* Math.max(window.innerWidth, window.innerHeight)}px`, margin: "20vh auto 5vh"}}>
-                <img src={logo} style={{width: "100%"}} alt="OppSpot-logo"/>
+            <div style={{width: `${0.1* Math.max(window.innerWidth, window.innerHeight)}px`, margin: "20vh auto 2vh"}}>
+                <img src={logo} className="wdt-100" alt="OppSpot-logo"/>
+            </div>
+            <div className="wdt-100" >
+                <p className="display-5 just-center">OppSpot</p>
             </div>
             <form className="card card-shadow" onSubmit={onSubmit}>
                 <div className="card-body">
@@ -60,7 +63,7 @@ export const Login: React.FC<LoginProps> = ({setScreen, setUserDetails}) => {
                         <label htmlFor="email" className="form-label">Email</label>
                         <input type="email" className="form-control" id="email" disabled={overlay} value={email} onChange={(e) => setEmail(e.target.value)}/>
                     </div>
-                    <button type="submit" className="btn btn-primary" disabled={overlay}>Enter</button>
+                    <button type="submit" className="btn btn-primary fl-rt" disabled={overlay}>Enter</button>
                 </div>
             </form>
         </>

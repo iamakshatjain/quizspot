@@ -1,13 +1,11 @@
 import {useEffect, useState} from 'react';
-import {questions} from './mock-data';
 import './Assets/index.css';
 import { QuestionProps, QuestionsProps } from './types';
 
-// TODO: don't send answer data to front-end
 // TODO: maintain selected answers in local storage
 // TODO: add text formatting to code and stuff for questions and answers
 
-const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDetails, setUserDetails}) => {
+const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDetails, setUserDetails, remainingTime}) => {
     const {ques, options} = questionData;
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
@@ -16,6 +14,7 @@ const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDe
         // update selected option on state
         const updatedUserDetails = { ...userDetails};
         updatedUserDetails.pendingTests[0].questions[index].selectedAnswer = selectedOption;
+        updatedUserDetails.pendingTests[0].remainingTime = remainingTime;
         setUserDetails(updatedUserDetails);
 
         // TODO: store selected answers to local storage and DB - using question number
@@ -45,20 +44,24 @@ const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDe
 
 export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, setUserDetails}) => {
     // time in seconds
-    const [timeToEnd, setTimeToEnd] = useState<number>(60);
+
+    // set the remaining time for the test
+    const [timeToEnd, setTimeToEnd] = useState<number>(userDetails.pendingTests[0].remainingTime);
 
     const endTest = () => {
         // move test to past tests
         const updatedUserDetails = { ...userDetails};
         const newPastTest = updatedUserDetails.pendingTests[0];
+        newPastTest.remainingTime = 0;
         updatedUserDetails.pendingTests = [];
         updatedUserDetails.pastTests.push(newPastTest);
         setUserDetails(updatedUserDetails);
+        console.log(updatedUserDetails);
         // TODO: make changes on the DB
 
-        // evaluate test using user Details
-        // const score = evaluateTest(userDetails)
-        // TODO: display score
+        // TODO: evaluate test using user Details
+        // evaluateTest(userDetails)
+
         // change screen
         setScreen(4);
     }
@@ -67,14 +70,9 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
         // TODO: retrieve selected answers by the user from local storage
         // TODO: retrieve selected answers and remaining time from DB if not in local storage
         // TODO: event listener to full screen
-        // set the remaining time for the test
-        const remainingTime = userDetails.pendingTests[0].remainingTime;
-        console.log(remainingTime);
-        setTimeToEnd(remainingTime);
 
         // start a timer to call startTest after 1 minute
         const intervalId = setInterval(() => {
-            console.log(timeToEnd);
             if(timeToEnd > 0)
                 setTimeToEnd(timeToEnd-1)
             else
@@ -83,9 +81,8 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
 
         return () => {
             clearInterval(intervalId);
-            endTest();
         }
-    }, [])
+    })
 
     return (
         <>
@@ -97,7 +94,7 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
             </div>
     
             {/* TODO: change later from local state of App.js */}
-            {questions.map(({id, ques, options}, index) => <Question questionData={{id, ques, options, selectedAnswer: ""}} questionNumber={index+1} userDetails={userDetails} setUserDetails={setUserDetails}/>)}
+            {userDetails.pendingTests[0].questions.map(({id, ques, options}, index) => <Question questionData={{id, ques, options, selectedAnswer: ""}} questionNumber={index+1} userDetails={userDetails} setUserDetails={setUserDetails} remainingTime={timeToEnd}/>)}
         </>
     )
 }

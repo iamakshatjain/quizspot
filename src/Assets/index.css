@@ -25,6 +25,11 @@
     display: flex
 }
 
+/* width */
+.wdt-100{
+    width: 100%;
+}
+
 /* footer */
 .footer{
     position: absolute;
