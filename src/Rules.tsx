@@ -1,21 +1,26 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './Assets/index.css';
-
-interface SetScreenAction {
-    setScreen: React.Dispatch<React.SetStateAction<number>>
-}
+import {RulesProps} from './types';
 
 // Beyond this anytest is a pending test - just update the last pending test
-export const Rules = ({setScreen}: SetScreenAction) => {
+export const Rules: React.FC<RulesProps> = ({setScreen}) => {
     // time in seconds
     const [timeToStart, setTimeToStart] = useState(60);
 
+    // const goFullScreen = () => {
+    //     const element = document.querySelector('body') as HTMLBodyElement;
+    //     element.requestFullscreen()
+    //     .then(() => {
+    //         console.log('Full Screen Enabled');
+    //     })
+    //     .catch(e => console.error(e));
+    //   };
+    
     const startTest = () => {
         setScreen(3);
     }
 
     useEffect(() => {
-        // TODO: make full screen
 
         // start a timer to call startTest after 1 minute
         const intervalId = setInterval(() => {
@@ -28,11 +33,6 @@ export const Rules = ({setScreen}: SetScreenAction) => {
         return () => {
             clearInterval(intervalId);
         }
-
-        // TODO: retrieve test data
-        // TODO: retrieve and set questions for the user
-        // TODO: set remaining time on DB 
-        // TODO: set remaining time and selected answers on the local storage 
     })
 
     return (
@@ -43,12 +43,11 @@ export const Rules = ({setScreen}: SetScreenAction) => {
                     Starts in {timeToStart%60} secs
                 </div>
                 <ul>
-                    <li>Something loremSomething loremSomething loremSomething lorem</li>
-                    <li>Something lormSomething lorem thing loremthing lorem</li>
-                    <li>Something loremSomething lororem</li>
-                    <li>Something loremSomething loremSomething loremSomething lorem</li>
-                    <li>Something lormSomething lorem thing loremthing lorem</li>
-                    <li>Something loremSomething lororem</li>
+                    <li>Tab/Window switching would lead to disqualification <strong>without warning</strong></li>
+                    <li>Exiting full screen mode would lead to disqualification <strong>without warning</strong></li>
+                    <li>The application uses face recognition as well as voice tracking, any unfair activity would lead to disqualification <strong>without warning</strong></li>
+                    <li>Only one attempt per test is allowed</li>
+                    <li>For any queries, contact us at <a href="mailto:akshat.oppspot@gmail.com">akshat.oppspot@gmail.com</a></li>
                 </ul>
                 <button className="btn btn-primary fl-rt" onClick={startTest}>Attempt</button>
                 <button className="btn btn-outline-primary btn-sm" onClick={() => setScreen(1)}>Back</button>

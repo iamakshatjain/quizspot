@@ -3,12 +3,18 @@ import './Assets/index.css';
 import { TestCardProps, TestsProps, Test, UserTest } from './types';
 import {getTestData, getUserQuestions} from './dataUtils';
 
-const TestCard = ({title, desc, onClick, disabled}: TestCardProps) => {
+const TestCard = ({title, companyName, level, timeAllowed, remainingTime, questionCount, onClick, disabled}: TestCardProps) => {
     return (
         <div className="card card-shadow mb-2">
             <div className="card-body">
                 <h5 className="card-title">{title}</h5>
-                <p className="card-text">{desc}</p>
+                <p className="card-text">
+                    <strong>Company Name</strong> <span className="fl-rt">{companyName}</span> <br/>
+                    <strong>Questions</strong> <span className="fl-rt">{questionCount}</span> <br/>
+                    <strong>Level</strong> <span className="fl-rt">{level}</span> <br/>
+                    {remainingTime && <span><strong>Remaining Time</strong> <span className="fl-rt">{Math.floor(remainingTime/60)} mins {remainingTime%60} secs</span><br/></span>}
+                    {timeAllowed && <span><strong>Time Allowed</strong> <span className="fl-rt">{Math.floor(timeAllowed/60)} mins {timeAllowed%60} secs</span></span>}
+                </p>
                 <button className="btn btn-primary" onClick={onClick} disabled={disabled}>Attempt</button>
             </div>
         </div>
@@ -22,11 +28,15 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
     const [availableTests, setAvailableTests] = useState<Test[]>([] as Test[]);
     const [isPendingTestsLoading, setIsPendingTestsLoading] = useState<boolean>(true);
     const [isAvailableTestsLoading, setIsAvailableTestsLoading] = useState<boolean>(true);
+    const [isTestLoading, setIsTestLoading] = useState<boolean>(false);
 
     const selectTest = (selectedTest: Test) => {
         
         // check if test is not pending test
         if(pendingTests.length === 0){
+            // start the test setup here
+            setIsTestLoading(true);
+
             // filter available tests
             const filteredAvailableTests = userDetails.availableTests.filter(test => test.id !== selectedTest.id);
             // set remaining time, marks obtained
@@ -41,19 +51,25 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
             getUserQuestions(selectedTest)
             .then((res) => {
                 newPendingTest.questions = res;
+                // update user data locally
+                const updatedUserDetails = { ...userDetails, availableTests: filteredAvailableTests, pendingTests: [newPendingTest]};
+                setUserDetails(updatedUserDetails);
+                // hereafter, we just update the last pending test
+                // TODO: update user data on server and local-storage - this would return a promise
+            })
+            .then(() => {
+                setIsTestLoading(false);
+                // change screen
+                setScreen(2);
             })
             .catch((e) => console.error(e));
 
-            // update user data locally
-            const updatedUserDetails = { ...userDetails, availableTests: filteredAvailableTests, pendingTests: [newPendingTest]};
-            setUserDetails(updatedUserDetails);
-
-            // hereafter, we just update the last pending test
-
-            // TODO: update user data on server and local-storage
+            
+        } else{
+            // change screen
+            setScreen(2);
         }
-        // change screen
-        setScreen(2);
+        
     }
 
     useEffect(() => {
@@ -101,10 +117,10 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
                         
                         {
                             availableTests.map((pendingTest, index) => {
-                                const {compName, type: {label}, level}: {compName: string, type: {label: string}, level: number} = pendingTest;
+                                const {compName, type: {label}, level, timeAllowed, qCount}: {compName: string, type: {label: string}, level: number, timeAllowed: number, qCount: number} = pendingTest;
                                 return (
                                     <div className="col-xs-12 col-sm-6" key={index}>
-                                        <TestCard title={`${label} Test`} desc={`Level ${level} test of ${label} for ${compName}`} onClick={() => selectTest(pendingTest)} disabled={pendingTests.length > 0}/>
+                                        <TestCard title={`${label} Test`} companyName={compName} level={level} timeAllowed={timeAllowed} questionCount={qCount} onClick={() => selectTest(pendingTest)} disabled={pendingTests.length > 0 || isTestLoading}/>
                                     </div>
                                     )
                             })
@@ -122,10 +138,10 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
                     (<div className="row">
                         {
                             pendingTests.map((pendingTest, index) => {
-                                const {compName, type: {label}, level}: {compName: string, type: {label: string}, level: number} = pendingTest;
+                                const {compName, type: {label}, level, qCount}: {compName: string, type: {label: string}, level: number, qCount: number} = pendingTest;
                                 return (
                                     <div className="col-xs-12 col-sm-6" key={index}>
-                                        <TestCard title={`${label} Test`} desc={`Level ${level} test of ${label} for ${compName}; Remaining Time: ${userDetails.pendingTests[0].remainingTime}`} onClick={() => selectTest(pendingTest)} disabled={false}/>
+                                        <TestCard title={`${label} Test`} companyName={compName} level={level} remainingTime={userDetails.pendingTests[0].remainingTime} questionCount={qCount} onClick={() => selectTest(pendingTest)} disabled={isTestLoading}/>
                                     </div>
                                     )
                             })
@@ -135,7 +151,7 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
                 )}
             </div>
             
-            <button className="btn btn-outline-primary btn-sm mt-5" onClick={() => setScreen(0)}>Back</button>
+            <button className="btn btn-outline-primary btn-sm mt-5 mb-2" onClick={() => setScreen(0)}>Back</button>
         </>
     )
 }

@@ -1,4 +1,5 @@
 // TODO: add expiration date to the tests
+// TODO: add URL image for the company or the test
 export const tests =  [
     {
         id: "123",
@@ -37,7 +38,7 @@ export const tests =  [
 export const userData = [
     {
         id: "131",
-        name: "something",
+        name: "Akshat",
         email: "wastea33@gmail.com",
         availableTests: [{
             id: "123",

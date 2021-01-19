@@ -1,7 +1,7 @@
 import {userData, tests, questions} from './mock-data';
 import { User, Test, Err, UserQuestion } from './types';
 
-const wait = (data: any, time = 0) => {
+const wait = (data: any, time = 10) => {
     return new Promise<typeof data>((resolve) => setTimeout(() => resolve(data), time));
 }
 

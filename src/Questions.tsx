@@ -22,13 +22,13 @@ const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDe
     }
 
     return (
-        <div className="card mb-3">
+        <div className="card mb-3" key={questionNumber}>
             <div className="card-header">Question {questionNumber}</div>
             <div className="card-body">
                 <p className="display-5">{ques}</p>
                 {
-                    options.map(option => (
-                        <div className={`card mb-2 option ${option === selectedOption ? 'bg-primary text-white' : '' }`} 
+                    options.map((option, index) => (
+                        <div key={`${questionNumber}O${index}`} className={`card mb-2 option ${option === selectedOption ? 'bg-primary text-white' : '' }`} 
                             onClick={() => selectOption(questionNumber, option)}>
                             <div className="card-body">
                                 {option}
@@ -69,7 +69,34 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
     useEffect(() => {
         // TODO: retrieve selected answers by the user from local storage
         // TODO: retrieve selected answers and remaining time from DB if not in local storage
-        // TODO: event listener to full screen
+        // Prevent Ctrl+S, Ctrl+C & Ctrl+V
+        document.onkeydown = function (e) {
+            e = e || window.event; //Get event
+            if (e.ctrlKey) {
+                var c = e.code; //Get key code
+                if (['KeyS', 'KeyC', 'KeyV'].includes(c)) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Violation : Ctrl + S, Ctrl+C, Ctrl+V not allowed');
+                }
+            }
+        };
+    
+        // detect tab switching
+        document.addEventListener('visibilitychange', (event) => {
+            if (document.visibilityState !== 'visible') {
+                console.log('Violation : Tab switching not allowed');
+            }
+        });
+
+        // // full screen detection - chrome (TODO: some error correct it later)
+        // document.addEventListener('webkitfullscreenchange', function () {
+        //     // full screen disabled
+        //     if (!document.fullscreenElement) {
+        //         console.log('violation : Exiting Full Screen not allowed');
+        //     }
+        // });
+  
 
         // start a timer to call startTest after 1 minute
         const intervalId = setInterval(() => {

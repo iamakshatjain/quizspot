@@ -59,7 +59,11 @@ export interface LoginProps {
 // Tests.tsx
 export interface TestCardProps{
     title: string, 
-    desc: string, 
+    companyName: string, 
+    level: number,
+    remainingTime?: number,
+    timeAllowed?: number,
+    questionCount: number,
     onClick: () => void,
     disabled: boolean
 }
@@ -68,6 +72,11 @@ export interface TestsProps{
     setScreen: React.Dispatch<React.SetStateAction<number>>,
     userDetails: User,
     setUserDetails: React.Dispatch<React.SetStateAction<User>>
+}
+
+// Rules.tsx
+export interface RulesProps {
+    setScreen: React.Dispatch<React.SetStateAction<number>>
 }
 
 // Questions.tsx
