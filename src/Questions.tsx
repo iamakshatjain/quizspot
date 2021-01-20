@@ -37,6 +37,7 @@ const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDe
 
                     ))
                 }
+                <button className="btn btn-warning btn-sm" onClick={() => {if(!disabled) selectOption(questionNumber, "")}}>Clear Selection</button>
             </div>
         </div>    
     )
