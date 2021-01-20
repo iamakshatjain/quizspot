@@ -37,7 +37,7 @@ const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDe
 
                     ))
                 }
-                <button className="btn btn-warning btn-sm" onClick={() => {if(!disabled) selectOption(questionNumber, "")}}>Clear Selection</button>
+                <button className="btn btn-warning btn-sm" disabled={!selectedOption} onClick={() => {if(!disabled) selectOption(questionNumber, "")}}>Clear Selection</button>
             </div>
         </div>    
     )
@@ -46,9 +46,7 @@ const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDe
 const goFullScreen = () => {
     const element = document.documentElement;
     element.requestFullscreen()
-    .then((res) => {
-        console.log('Full Screen Enabled');
-    })
+    .then(() => {})
     .catch(e => console.error(e));
 };
 
@@ -59,6 +57,7 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
     const [timeToEnd, setTimeToEnd] = useState<number>(userDetails.pendingTests[0].remainingTime);
     const [violation, setViolation] = useState<string>("");
     const [violationCount, setViolationCount] = useState<number>(0);
+    const [alertCountDown, setAlertCountdown] = useState<number>(20);
 
     const endTest = () => {
 
@@ -92,7 +91,7 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
                 if (['KeyS', 'KeyC', 'KeyV'].includes(c)) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Violation : Ctrl + S, Ctrl+C, Ctrl+V not allowed');
+                // console.log('Violation : Ctrl + S, Ctrl+C, Ctrl+V not allowed');
                 }
             }
         };
@@ -100,7 +99,7 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
         // detect tab switching
         document.addEventListener('visibilitychange', (event) => {
             if (document.visibilityState !== 'visible') {
-                console.log('Violation : Tab or Window switching');
+                // console.log('Violation : Tab or Window switching');
                 // set only if violationCount is zero
                 if(violationCount === 0)
                     setViolation("Tab or Window Switching");
@@ -113,7 +112,7 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
         document.addEventListener('fullscreenchange', function () {
             // full screen disabled
             if (!document.fullscreenElement) {
-                console.log('violation : Exiting Full Screen');
+                // console.log('violation : Exiting Full Screen');
                 if(violationCount === 0)
                     setViolation("Exiting Full Screen");
                 else
@@ -142,12 +141,30 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
         }
     })
 
-    return (
-        <>
-            {violation && <div id="modal" className="center" style={{zIndex: 1000, width: 'fit-content'}}>
+    const ViolationAlert = () => {
+
+        useEffect(() => {
+            // start a timer to call startTest after 1 minute
+            const alertIntervalId = setInterval(() => {
+                if(alertCountDown > 0)
+                    setAlertCountdown(alertCountDown-1)
+                else
+                    endTest();
+            }, 1000)     
+
+            return () => {
+                clearInterval(alertIntervalId);
+            }
+        })
+
+        return (
+            <div id="modal" className="center" style={{zIndex: 1000, width: 'fit-content'}}>
                 <div className="card">
                     <div className="card-header">Violation</div>
                     <div className="card-body">
+                        <div className="alert alert-danger just-center">
+                            {alertCountDown} secs
+                        </div>
                         <p>{violation} Not Allowed!</p>
                         <p><strong>Last Warning</strong></p>
                         <div className="just-center">
@@ -160,7 +177,13 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
                         </div>
                     </div>
                 </div>
-            </div>}
+            </div>
+        )
+    }
+
+    return (
+        <>
+            {violation && <ViolationAlert />}
             <div className={`mt-3 mb-4 flx ${violation ? 'overlay' : ''}`}>
                 <div className={`alert alert-${timeToEnd>10 ? 'primary': 'danger'} just-center algn-center`}>
                     Ends in {Math.floor(timeToEnd/60)} mins and {timeToEnd%60} secs
