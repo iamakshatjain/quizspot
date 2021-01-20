@@ -1,3 +1,5 @@
+// TODO: later this file would move to backend
+import {db} from './firebase';
 import {userData, tests, questions} from './mock-data';
 import { User, Test, Err, UserQuestion } from './types';
 
@@ -18,6 +20,10 @@ export const getUserData = (name: string, email: string) => {
     return wait({err : "Invalid User"} as Err);
     // TODO: handle this with DB later
 }
+
+// export const updateUserDetails = (user: User) => {
+//     // TODO: update user details on the server
+// }
 
 // get Tests data
 export const getTestData = (testIDs: string[]) => {
@@ -58,4 +64,3 @@ export const getUserQuestions = (test: Test) => {
 // export const evaluateTest = (user: User) => {
 //     // TODO: evaluate the last past test of the user and store the data into past tests data
 // }
-

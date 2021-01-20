@@ -1,5 +1,3 @@
-// TODO: add expiration date to the tests
-// TODO: add URL image for the company or the test
 export const tests =  [
     {
         id: "123",
@@ -69,7 +67,6 @@ export const userData = [
     }
 ];
 
-// TODO: add different marks to different question as well, for now - all are same
 export const questions = [{
         id: "qJAVA1",
         ques: "What is your java1?",

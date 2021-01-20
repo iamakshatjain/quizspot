@@ -3,7 +3,7 @@ import logo from "./Assets/logo_circle.png";
 import './Assets/index.css';
 
 // TODO: create a feedback system here
-// TODO: get user details here and display the score is (TB discussed)
+// TODO: get user details here and display the score (To Be discussed)
 
 const getOffFullScreen = () => {
     if (document.fullscreenElement) {

@@ -1,3 +1,4 @@
+// TODO: add different marks to different question as well, for now - all are same
 export type Question = {
     id: string,
     ques: string,
@@ -20,6 +21,8 @@ export type UserTest = {
 }
 
 // TODO: later add more details about how many questions from what tech stack etc.
+// TODO: add expiration date to the tests
+// TODO: add URL image for the company or the test
 export type Test = {
     id:string,
     compName: string,

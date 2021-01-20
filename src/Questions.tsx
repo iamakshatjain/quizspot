@@ -18,6 +18,8 @@ const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDe
         setUserDetails(updatedUserDetails);
 
         // TODO: store selected answers to local storage and DB - using question number
+        // updatedUserDetails(updatedUserDetails);
+
         setSelectedOption(selectedOption);
     }
 
@@ -75,6 +77,7 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
         setUserDetails(updatedUserDetails);
         
         // TODO: make changes on the DB
+        // updateUserDetails(updatedUserDetails);
 
         // TODO: evaluate test using user Details
         // evaluateTest(userDetails)
@@ -192,7 +195,8 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
             </div>
             
             <div className={`${violation ? 'overlay' : ''}`}>
-                {userDetails.pendingTests[0].questions.map(({id, ques, options}, index) => <Question questionData={{id, ques, options, selectedAnswer: ""}} questionNumber={index+1} userDetails={userDetails} setUserDetails={setUserDetails} remainingTime={timeToEnd} disabled={!!violation}/>)}
+                {/* selected answer is available in the case of past tests */}
+                {userDetails.pendingTests[0].questions.map(({id, ques, options, selectedAnswer=""}, index) => <Question questionData={{id, ques, options, selectedAnswer}} questionNumber={index+1} userDetails={userDetails} setUserDetails={setUserDetails} remainingTime={timeToEnd} disabled={!!violation}/>)}
             </div>
         </>
     )
