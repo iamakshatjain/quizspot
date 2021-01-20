@@ -60,6 +60,7 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
     const [violationCount, setViolationCount] = useState<number>(0);
 
     const endTest = () => {
+
         // move test to past tests
         const updatedUserDetails = { ...userDetails};
         const newPastTest = updatedUserDetails.pendingTests[0];
@@ -98,10 +99,10 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
         // detect tab switching
         document.addEventListener('visibilitychange', (event) => {
             if (document.visibilityState !== 'visible') {
-                console.log('Violation : Tab switching');
+                console.log('Violation : Tab or Window switching');
                 // set only if violationCount is zero
                 if(violationCount === 0)
-                    setViolation("Tab Switching");
+                    setViolation("Tab or Window Switching");
                 else
                     endTest();
             }
@@ -118,6 +119,13 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
                     endTest();
             }
         });
+
+        window.addEventListener('blur', () => {
+            if(violationCount === 0)
+                    setViolation("Tab or Window Switching");
+                else
+                    endTest();
+        })
   
 
         // start a timer to call startTest after 1 minute

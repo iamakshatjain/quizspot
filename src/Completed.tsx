@@ -1,9 +1,24 @@
+import {useEffect} from 'react'
 import logo from "./Assets/logo_circle.png";
 import './Assets/index.css';
 
 // TODO: create a feedback system here
-// TODO: get user details here and display the score is
+// TODO: get user details here and display the score is (TB discussed)
+
+const getOffFullScreen = () => {
+    if (document.fullscreenElement) {
+        document.exitFullscreen()
+          .then(() => console.log("Document Exited form Full screen mode"))
+          .catch((err) => console.error(err))
+      }
+}
+
 export const Completed = () => {
+
+    useEffect(() => {
+        getOffFullScreen();
+    }, [])
+
     return (
         <>
             <div style={{width: `${0.1* Math.max(window.innerWidth, window.innerHeight)}px`, margin: "20vh auto 5vh"}}>
