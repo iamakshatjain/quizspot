@@ -1,4 +1,5 @@
 // TODO: add different marks to different question as well, for now - all are same
+// TODO: add negative marking to the questions
 export type Question = {
     id: string,
     ques: string,
@@ -68,7 +69,8 @@ export interface TestCardProps{
     timeAllowed?: number,
     questionCount: number,
     onClick: () => void,
-    disabled: boolean
+    disabled: boolean,
+    marksObtained?:number
 }
 
 export interface TestsProps{

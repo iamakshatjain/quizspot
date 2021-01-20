@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import logo from "./Assets/logo_circle.png";
 import './Assets/index.css';
 import {LoginProps} from './types';
-import { getUserData } from './dataUtils';
+import {getUserData} from './Utils/data';
+import {isErr} from './Utils';
 
 // TODO: add authentication - for now add only the students who must attend
 export const Login: React.FC<LoginProps> = ({setScreen, setUserDetails}) => {
@@ -21,9 +22,9 @@ export const Login: React.FC<LoginProps> = ({setScreen, setUserDetails}) => {
         if(name !== '' || email !== ''){
             // get user details
             getUserData(name, email)
-            .then((res => {
+            .then(res => {
                 // if Error
-                if(res.err){
+                if(isErr(res)){
                     alert(res.err)
                 } else {
                     // update user info in local state of the app
@@ -33,7 +34,7 @@ export const Login: React.FC<LoginProps> = ({setScreen, setUserDetails}) => {
                 }
                 // remove overlay
                 setOverlay(false);
-            }))
+            })
             .catch(e => console.error(e));
         }
         else{

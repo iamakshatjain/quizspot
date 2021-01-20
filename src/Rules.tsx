@@ -1,20 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import './Assets/index.css';
 import {RulesProps} from './types';
+import {goFullScreen} from './Utils';
 
 // Beyond this anytest is a pending test - just update the last pending test
 export const Rules: React.FC<RulesProps> = ({setScreen}) => {
     // time in seconds
     const [timeToStart, setTimeToStart] = useState(60);
-
-    const goFullScreen = () => {
-        const element = document.documentElement;
-        element.requestFullscreen()
-        .then((res) => {
-            console.log('Full Screen Enabled');
-        })
-        .catch(e => console.error(e));
-    };
     
     const startTest = () => {
         goFullScreen();

@@ -43,24 +43,6 @@ export const userData = [
             questions: [],
             remainingTime: -1,
             marksObtained: -1
-        },
-        {
-            id: "124",
-            questions: [],
-            remainingTime: -1,
-            marksObtained: -1
-        },
-        {
-            id: "125",
-            questions: [],
-            remainingTime: -1,
-            marksObtained: -1
-        },
-        {
-            id: "126",
-            questions: [],
-            remainingTime: -1,
-            marksObtained: -1
         }],
         pendingTests: [],
         pastTests: []

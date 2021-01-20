@@ -1,13 +1,15 @@
 import {useEffect, useState} from 'react';
 import './Assets/index.css';
 import { QuestionProps, QuestionsProps } from './types';
+import {goFullScreen} from './Utils';
+import { updateUserDetails, evaluateTest } from './Utils/data';
 
 // TODO: maintain selected answers in local storage - with redux
 // TODO: add text formatting to code and stuff for questions and answers
 
 const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDetails, setUserDetails, remainingTime, disabled}) => {
-    const {ques, options} = questionData;
-    const [selectedOption, setSelectedOption] = useState<string | null>(null);
+    const {ques, options, selectedAnswer} = questionData;
+    const [selectedOption, setSelectedOption] = useState<string>(selectedAnswer);
 
     const selectOption = (questionNumber: number, selectedOption: string) => {
         const index = questionNumber - 1;
@@ -18,7 +20,7 @@ const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDe
         setUserDetails(updatedUserDetails);
 
         // TODO: store selected answers to local storage and DB - using question number
-        // updatedUserDetails(updatedUserDetails);
+        updateUserDetails(updatedUserDetails);
 
         setSelectedOption(selectedOption);
     }
@@ -45,13 +47,6 @@ const Question: React.FC<QuestionProps> = ({questionData, questionNumber, userDe
     )
 }
 
-const goFullScreen = () => {
-    const element = document.documentElement;
-    element.requestFullscreen()
-    .then(() => {})
-    .catch(e => console.error(e));
-};
-
 export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, setUserDetails}) => {
     // time in seconds
 
@@ -62,7 +57,6 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
     const [alertCountDown, setAlertCountdown] = useState<number>(20);
 
     const endTest = () => {
-
         // move test to past tests
         const updatedUserDetails = { ...userDetails};
         const newPastTest = updatedUserDetails.pendingTests[0];
@@ -73,14 +67,14 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
         // change screen
         setScreen(4);
 
-        // update user details
-        setUserDetails(updatedUserDetails);
+        // // update user details
+        // setUserDetails(updatedUserDetails);
         
-        // TODO: make changes on the DB
+        // // TODO: make changes on the DB
         // updateUserDetails(updatedUserDetails);
 
         // TODO: evaluate test using user Details
-        // evaluateTest(userDetails)
+        evaluateTest(updatedUserDetails);
     }
 
     useEffect(() => {
@@ -188,6 +182,7 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
         <>
             {violation && <ViolationAlert />}
             <div className={`mt-3 mb-4 flx ${violation ? 'overlay' : ''}`}>
+                {/* TODO: make this seperate component, since each second all the questions re-render */}
                 <div className={`alert alert-${timeToEnd>10 ? 'primary': 'danger'} just-center algn-center`}>
                     Ends in {Math.floor(timeToEnd/60)} mins and {timeToEnd%60} secs
                 </div>

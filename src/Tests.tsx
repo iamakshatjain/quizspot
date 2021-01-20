@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './Assets/index.css';
 import { TestCardProps, TestsProps, Test, UserTest } from './types';
-import {getTestData, getUserQuestions} from './dataUtils';
+import {getTestData, getUserQuestions, updateUserDetails} from './Utils/data';
 
 const TestCard = ({title, companyName, level, timeAllowed, remainingTime, questionCount, onClick, disabled}: TestCardProps) => {
     return (
@@ -15,7 +15,7 @@ const TestCard = ({title, companyName, level, timeAllowed, remainingTime, questi
                     {remainingTime && <span><strong>Remaining Time</strong> <span className="fl-rt">{Math.floor(remainingTime/60)} mins {remainingTime%60} secs</span><br/></span>}
                     {timeAllowed && <span><strong>Time Allowed</strong> <span className="fl-rt">{Math.floor(timeAllowed/60)} mins {timeAllowed%60} secs</span></span>}
                 </p>
-                <button className="btn btn-primary" onClick={onClick} disabled={disabled}>Attempt</button>
+                <button className="btn btn-primary fl-rt" onClick={onClick} disabled={disabled}>Attempt</button>
             </div>
         </div>
     )
@@ -26,8 +26,10 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
     
     const [pendingTests, setPendingTests] = useState<Test[]>([] as Test[]);
     const [availableTests, setAvailableTests] = useState<Test[]>([] as Test[]);
+    // const [pastTests, setPastTests] = useState<Test[]>([] as Test[]);
     const [isPendingTestsLoading, setIsPendingTestsLoading] = useState<boolean>(true);
     const [isAvailableTestsLoading, setIsAvailableTestsLoading] = useState<boolean>(true);
+    // const [isPastTestLoading, setIsPastTestLoading] = useState<boolean>(true);
     const [isTestLoading, setIsTestLoading] = useState<boolean>(false);
 
     const selectTest = (selectedTest: Test) => {
@@ -56,6 +58,7 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
                 setUserDetails(updatedUserDetails);
                 // hereafter, we just update the last pending test
                 // TODO: update user data on server and local-storage - this would return a promise
+                updateUserDetails(updatedUserDetails);
             })
             .then(() => {
                 setIsTestLoading(false);
@@ -126,7 +129,7 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
                             })
                         }
                     </div>) : 
-                    (<div className="display-6">{`None, Enjoy ;)`}</div>)
+                    (<div>{`None, Enjoy ;)`}</div>)
                 )}
             </div>
 
@@ -150,6 +153,8 @@ export const Tests: React.FC<TestsProps> = ({setScreen, userDetails, setUserDeta
                     (<div>{`None, Enjoy ;)`}</div>)
                 )}
             </div>
+
+            {/* TODO: add past tests here */}
             
             <button className="btn btn-outline-primary btn-sm mt-5 mb-2" onClick={() => setScreen(0)}>Back</button>
         </>
