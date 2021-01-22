@@ -13,18 +13,18 @@ export const getUserData = async (name: string, email: string) => {
     // only the user which exists in the databse is allowed to take the tests
     // find user with matching details
     try{
-        const querySnapshot = await db.collection('users').where('name', '==', name).where('email', '==', email).get();
+        const querySnapshot = await db.collection('users').where('email', '==', email).get();
         const doc = querySnapshot.docs[0];
         if(doc.exists){
             // user details
-            const user =  doc.data() as User;
+            const user =  {...doc.data(), name} as User;
             return user;
         } else{
             return {err: "Invalid User"} as Err;
         }
     } 
     catch (e) {
-        return {err: "Server Error"} as Err;
+        return {err: "Invalid User"} as Err;
     }   
     
 }
@@ -48,6 +48,7 @@ export const getTestData = async(testIDs: string[]) => {
     // for each testID find the data from the tests
     try{
         const tests: Test[] = [];
+        // TODO: handle this later when there are more than 10 tests
         const querySnapshot = await db.collection('tests').where('id', 'in', testIDs).get();
         querySnapshot.forEach(doc => {
             tests.push(doc.data() as Test);
@@ -96,12 +97,16 @@ export const evaluateTest = async(user: User) => {
 
         // calculating marks
         var totalMarks: number = 0;
-        const questionsSnapshot = await db.collection('questions').where('id', 'in', questionIDs).get();
-        questionsSnapshot.forEach(doc => {
-            let question = doc.data();
-            if(question.ans === questionAnswerMap[question.id])
-                totalMarks+=1;
-        });
+        for(let i=0; i<questionIDs.length; i++){
+            let questionID = questionIDs[i];
+            const questionsSnapshot = await db.collection('questions').where('id', '==', questionID).get();
+            const doc = questionsSnapshot.docs[0];
+            if(doc.exists){
+                let question = doc.data();
+                if(question.ans === questionAnswerMap[question.id])
+                    totalMarks+=1;
+            }
+        }
 
         // update marks on server
         const updatedUserDetails = {...user};
