@@ -77,6 +77,35 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
         evaluateTest(updatedUserDetails);
     }
 
+    const handleVisibilityChange = () => {
+        if (document.visibilityState !== 'visible') {
+            // console.log('Violation : Tab or Window switching');
+            // set only if violationCount is zero
+            if(violationCount === 0)
+                setViolation("Tab or Window Switching");
+            else
+                endTest();
+        }
+    };
+
+    const handleFullScreenChange = () => {
+        // full screen disabled
+        if (!document.fullscreenElement) {
+            // console.log('violation : Exiting Full Screen');
+            if(violationCount === 0)
+                setViolation("Exiting Full Screen");
+            else
+                endTest();
+        }
+    };
+
+    const handleBlur = () => {
+        if(violationCount === 0)
+                setViolation("Tab or Window Switching");
+            else
+                endTest();
+    };
+
     useEffect(() => {
         // TODO: retrieve selected answers by the user from local storage
         // TODO: retrieve selected answers and remaining time from DB if not in local storage
@@ -94,35 +123,12 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
         };
     
         // detect tab switching
-        document.addEventListener('visibilitychange', (event) => {
-            if (document.visibilityState !== 'visible') {
-                // console.log('Violation : Tab or Window switching');
-                // set only if violationCount is zero
-                if(violationCount === 0)
-                    setViolation("Tab or Window Switching");
-                else
-                    endTest();
-            }
-        });
+        document.addEventListener('visibilitychange', handleVisibilityChange);
 
         // full screen detection - chrome (TODO: some error correct it later)
-        document.addEventListener('fullscreenchange', function () {
-            // full screen disabled
-            if (!document.fullscreenElement) {
-                // console.log('violation : Exiting Full Screen');
-                if(violationCount === 0)
-                    setViolation("Exiting Full Screen");
-                else
-                    endTest();
-            }
-        });
+        document.addEventListener('fullscreenchange', handleFullScreenChange);
 
-        window.addEventListener('blur', () => {
-            if(violationCount === 0)
-                    setViolation("Tab or Window Switching");
-                else
-                    endTest();
-        })
+        window.addEventListener('blur', handleBlur);
   
 
         // start a timer to call startTest after 1 minute
@@ -134,9 +140,12 @@ export const Questions: React.FC<QuestionsProps> = ({setScreen, userDetails, set
         }, 1000)     
 
         return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            document.removeEventListener('fullscreenchange', handleFullScreenChange);
+            window.removeEventListener('blur', handleBlur);
             clearInterval(intervalId);
         }
-    })
+    });
 
     const ViolationAlert = () => {
 
